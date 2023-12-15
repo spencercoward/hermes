@@ -8,6 +8,7 @@ namespace hermes
 
 struct Pulse
 {
+	std::uint64_t m_toa;
 	std::uint64_t m_frequency;
 	std::uint64_t m_amplitude;
 	std::uint64_t m_pulseWidth;

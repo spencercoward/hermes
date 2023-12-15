@@ -37,6 +37,6 @@ include_directories(include)
 set(SOURCES src/hermes.cpp)
 
 add_executable(hermes ${SOURCES})
-target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Net zmq flatbuffers)
+target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Net libzmq-static flatbuffers::flatbuffers)
 
 # written by scoward

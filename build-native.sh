@@ -185,6 +185,13 @@ if [ ! -d "$PRJ_BLD_DIR/CMakeFiles" ]; then
         )
 fi
 
+TIMEFORMAT='
+*********************************************************
+build elapsed time is %2lE
+*********************************************************
+'
+time (cmake --build $PRJ_BLD_DIR -j 24)
+
 #pushd hermes-build
 #cmake ..
 #cmake --build . -j 24
