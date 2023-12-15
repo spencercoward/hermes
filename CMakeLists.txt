@@ -17,11 +17,17 @@ find_package(PocoXML REQUIRED)
 
 # find poco
 find_package(Poco REQUIRED COMPONENTS Net Foundation Util XML JSON Zip)
+
 # find zmq
 find_package(ZeroMQ REQUIRED)
+
+cmake_print_variables(ZeroMQ_FIND_COMPONENTS)
+
+
 # find flatbuffers
 find_package(flatbuffers REQUIRED)
 
+cmake_print_variables(flatbuffers_FIND_COMPONENTS)
 
 
 include_directories(include)
