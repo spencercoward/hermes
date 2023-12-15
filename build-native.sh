@@ -27,162 +27,83 @@ export ROOT_DIR=$PWD
 ################################################
 
 Help()
-
 {
-
    # Display Help
-
    echo "CMake builder script"
-
    echo
-
    echo "Syntax: scriptTemplate [option]"
-
    echo "options:"
-
    echo "-h | --help        Print this Help."
-
    echo "-j | --jobs        Configure the jobs to use for build (defaults to 1)"
-
    echo "-t | --toolchain   Specify Toolchain to be used (Available Toolchain files can be found under cmake)."
-
    echo "-c | --config      Specify config - Release or Debug."
-
    echo "-C | --credentials Specify Credentials for cloning"
-
    echo "-g | --generator  Specify the generator used for cmake. cmake --help for all options"
-
    echo "-f | --force      Force a reconfigure on a specific item"
-
    echo "-v | --version    Build sw with version number built in"
-
    echo
-
- 
 
    exit
-
 }
 
- 
-
 # Get the options
-
 SHORT=h,t:,j:,c:,C:,v:,g:,f:
-
 LONG=help,toolchain:,jobs:,config:,credentials:,version:,generator:,force:
-
 OPTS=$(getopt -a -n configure-cmake --options $SHORT --longoptions $LONG -- "$@")
-
 VALID_ARGUMENTS=$# # Returns the count of arguments that are in short or long options
-
 eval set -- "$OPTS"
 
- 
-
 ToolChain=""
-
 CONFIG_OPT=""
 
- 
-
 while :
-
   do
-
    case $1 in
-
       -h | --help ) # display Help
-
          Help
-
          shift 2
-
          ;;
-
       -j | --jobs )
-
          JOBS="-j $2"
-
          shift 2
-
          ;;
-
       -t | --toolchain )
-
          ToolChain=$2
-
          echo "ToolChain = ${ToolChain}"
-
          shift 2
-
          ;;
-
       -c | --config )
-
          CONFIG_OPT=$2
-
          echo "config = ${CONFIG_OPT}"
-
          shift 2
-
          ;;
-
       -C | --credentials )
-
          JENKINS_CRED="$2"
-
          shift 2
-
          ;;
-
       -v | --version )
-
          VERSION=$2
-
          echo "version = ${VERSION}"
-
          shift 2
-
          ;;
-
       -g | --generator )
-
          CMAKE_GENERATOR="$2"
-
          shift 2
-
          ;;
-
       -f | --force )
-
          FORCE="$2"
-
          shift 2
-
          ;;
-
       --)
-
          shift;
-
          break
-
          ;;
-
       *) # Invalid option
-
          echo "Error: Invalid option"
-
          Help
-
          ;;
-
    esac
-
 done
-
- 
 
 # Verify valid Toolchain and determine directory layout
 TARGET_PLATFORM=""
@@ -191,7 +112,7 @@ TC_DIR="${PWD}/cmake/tc-${ToolChain}.cmake"
 if [ ! -f $TC_DIR ]; then
   echo "$TC_DIR does not exist. Using default."
   TC_DIR=""
-  BLD_DIR="build/sim"
+  BLD_DIR="build/host"
 else
   TARGET_PLATFORM=$(cut -d "-" -f 2 <<< "$ToolChain")
   BLD_DIR="build/${TARGET_PLATFORM}/$(cut -d "-" -f 1 <<< "$ToolChain")"
@@ -249,7 +170,7 @@ echo "**************************************************************************
 
 TIMEFORMAT='
 *********************************************************
-${PROJECT_NAME} configure elapsed time is %2lE
+configure elapsed time is %2lE
 *********************************************************
 '
 
