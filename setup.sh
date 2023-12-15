@@ -18,8 +18,9 @@ mkdir -p external/install
 pushd external/sources
 
 git clone --recursive --depth 1 https://github.com/pocoproject/poco.git
-git clone --recursive --depth 1 https://github.com/zeromq/libzmq.git
 git clone --recursive --depth 1 https://github.com/google/flatbuffers.git
+git clone --recursive --depth 1 https://github.com/zeromq/libzmq.git
+git clone --recursive --depth 1 https://github.com/zeromq/cppzmq.git
 
 # build the libs
 pushd poco
@@ -39,6 +40,14 @@ $HERMES_CMAKE_INSTALL_COMMAND
 popd
 
 pushd flatbuffers
+
+$HERMES_CMAKE_CONFIGURE_COMMAND
+$HERMES_CMAKE_BUILD_COMMAND
+$HERMES_CMAKE_INSTALL_COMMAND
+
+popd
+
+pushd cppzmq
 
 $HERMES_CMAKE_CONFIGURE_COMMAND
 $HERMES_CMAKE_BUILD_COMMAND

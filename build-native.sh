@@ -137,17 +137,12 @@ else # Default config to debug for windows/vxworks if not specified
   fi
 fi
 
-# quick check if setup has been run
-#if [ ! -d "./external/install/lib" ]
-#then
-#   ./setup.sh
-#fi
+quick check if setup has been run
+if [ ! -d "./external/sources/poco" ]
+then
+  ./setup.sh
+fi
 
-# check if we already have a build dir
-#if [ ! -d "./hermes-build" ]
-#then
-#   mkdir hermes-build
-#fi
 
 #PRJ_BLD_DIR=$BLD_DIR/$PROJECT_NAME
 PRJ_BLD_DIR=$BLD_DIR

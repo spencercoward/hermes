@@ -1,7 +1,7 @@
 // // written by scoward
 
 #include <Poco/Stopwatch.h>
-#include <zmq.h>
+#include <zmq.hpp>
 #include "hermes/hermes.h"
 #include "hermes/Pulse_generated.h"
 
