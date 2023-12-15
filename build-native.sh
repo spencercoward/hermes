@@ -138,10 +138,10 @@ else # Default config to debug for windows/vxworks if not specified
 fi
 
 # quick check if setup has been run
-if [ ! -d "./external/install/lib" ]
-then
-   ./setup
-fi
+#if [ ! -d "./external/install/lib" ]
+#then
+#   ./setup.sh
+#fi
 
 # check if we already have a build dir
 #if [ ! -d "./hermes-build" ]
