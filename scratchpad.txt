@@ -1,0 +1,9 @@
+// written by scoward
+
+these are going to be notes / random things to keep in mind / general commands / helpful
+
+currently there is a hacky thing im doing for linking against poco in the cmakelists, i need to manually find some of the dependencies using the following
+   find_package(PocoJSON REQUIRED)
+   find_package(PocoXML REQUIRED)
+
+// written by scoward
