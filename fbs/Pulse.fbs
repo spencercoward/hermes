@@ -1,0 +1,22 @@
+// Example IDL file for our monster's schema.
+ 
+namespace hermes;
+ 
+//enum Color:byte { Red = 0, Green, Blue = 2 }
+ 
+//union Equipment { Weapon } // Optionally add more tables.
+ 
+// struct Vec3 {
+//   x:float;
+//   y:float;
+//   z:float;
+// }
+ 
+table Pulse {
+    toa:long;
+    frequency:long;
+    amplitude:long;
+    pulse_width:long;
+}
+
+root_type Pulse;

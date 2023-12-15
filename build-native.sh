@@ -107,7 +107,7 @@ done
 
 # Verify valid Toolchain and determine directory layout
 TARGET_PLATFORM=""
-TC_DIR="${PWD}/cmake/tc-${ToolChain}.cmake"
+TC_DIR="${PWD}/toolchains/tc-${ToolChain}.cmake"
 
 if [ ! -f $TC_DIR ]; then
   echo "$TC_DIR does not exist. Using default."
@@ -152,7 +152,10 @@ fi
 #PRJ_BLD_DIR=$BLD_DIR/$PROJECT_NAME
 PRJ_BLD_DIR=$BLD_DIR
 PRJ_INSTALL_DIR=$PWD/external/install
-
+POCO_SRC_DIR=$PWD/external/sources/poco
+POCO_BLD_DIR=$PWD/external/sources/poco/hermes-build
+GRPC_SRC_DIR=$PWD/external/sources/grpc
+GRPC_BLD_DIR=$PWD/external/sources/grpc/hermes-build
  
 echo "*****************************************************************************"
 echo "Executing cmake configure steps for $PROJECT_NAME"
@@ -191,9 +194,5 @@ build elapsed time is %2lE
 *********************************************************
 '
 time (cmake --build $PRJ_BLD_DIR -j 24)
-
-#pushd hermes-build
-#cmake ..
-#cmake --build . -j 24
 
 # written by scoward
