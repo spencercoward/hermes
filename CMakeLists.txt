@@ -27,7 +27,7 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hermes.cpp
 )
 
-target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Net cppzmq libzmq-static flatbuffers::flatbuffers)
+target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Util Poco::Net cppzmq libzmq-static flatbuffers::flatbuffers)
 
 target_include_directories(${PROJECT_NAME}
                            PUBLIC
