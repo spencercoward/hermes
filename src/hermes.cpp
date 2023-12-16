@@ -1,4 +1,4 @@
-// // written by scoward
+// written by scoward
 
 #include <zmq.hpp>
 
@@ -18,6 +18,8 @@ namespace hermes
 
 Hermes::Hermes()
 	: _helpRequested(false)
+	, _roleString("")
+	, _runnable(nullptr)
 {
 }
 
@@ -67,8 +69,9 @@ void Hermes::defineOptions(Poco::Util::OptionSet &options)
 		Poco::Util::Option("role", "r", "role to use [pub/sub]")
 			.required(true)
 			.repeatable(false)
+			.argument("value")
 			.callback(Poco::Util::OptionCallback<Hermes>(
-				this, &Hermes::handleConfig)));
+				this, &Hermes::handleRole)));
 
 	options.addOption(
 		Poco::Util::Option("ipaddr", "i", "ip addr to send/receive on")
@@ -83,7 +86,7 @@ void Hermes::handleHelp(const std::string &name, const std::string &value)
 	stopOptionsProcessing();
 }
 
-void Hermes::handleConfig(const std::string &name, const std::string &value)
+void Hermes::handleRole(const std::string &name, const std::string &value)
 {
 	_roleString = value;
 }
@@ -104,14 +107,18 @@ int Hermes::main(const ArgVec &args)
 	{
 		if (_roleString == "pub")
 		{
-			_runnable.reset(new hermes::Publisher);
+			_runnable.reset(new hermes::Publisher(logger()));
 		}
 		else if (_roleString == "sub")
 		{
-			_runnable.reset(new hermes::Subscriber);
+			_runnable.reset(new hermes::Subscriber(logger()));
 		}
 		else
 		{
+			logger().fatal(
+				"role parameter provided is not acceptable, must be pub or sub, you provided [" +
+				_roleString + "]");
+			return Poco::Util::Application::EXIT_USAGE;
 		}
 		logger().information("Command line:");
 		std::ostringstream ostr;
@@ -135,4 +142,4 @@ int Hermes::main(const ArgVec &args)
 
 POCO_APP_MAIN(hermes::Hermes)
 
-// // written by scoward
+// written by scoward

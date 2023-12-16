@@ -1,15 +1,15 @@
 #ifndef PUBLISHER_H
 #define PUBLISHER_H
 
-#include <Poco/Runnable.h>
+#include "hermes/LoggableRunnable.h"
 
 namespace hermes
 {
 
-class Publisher : public Poco::Runnable
+class Publisher : public hermes::LoggableRunnable
 {
 public:
-	Publisher() = default;
+	Publisher(Poco::Logger &log);
 	virtual ~Publisher() = default;
 	virtual void run();
 

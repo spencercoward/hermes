@@ -1,15 +1,15 @@
 #ifndef SUBSCRIBER_H
 #define SUBSCRIBER_H
 
-#include <Poco/Runnable.h>
+#include "hermes/LoggableRunnable.h"
 
 namespace hermes
 {
 
-class Subscriber : public Poco::Runnable
+class Subscriber : public hermes::LoggableRunnable
 {
 public:
-	Subscriber() = default;
+	Subscriber(Poco::Logger &log);
 	virtual ~Subscriber() = default;
 	virtual void run();
 

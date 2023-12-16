@@ -3,7 +3,9 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
-#include "Poco/Util/Application.h"
+#include <Poco/Util/Application.h>
+
+#include "hermes/LoggableRunnable.h"
 
 namespace hermes
 {
@@ -24,7 +26,7 @@ protected:
 
 	void handleHelp(const std::string &name, const std::string &value);
 
-	void handleConfig(const std::string &name, const std::string &value);
+	void handleRole(const std::string &name, const std::string &value);
 
 	void displayHelp();
 
@@ -33,7 +35,7 @@ protected:
 private:
 	bool _helpRequested;
 	std::string _roleString;
-	std::unique_ptr<Poco::Runnable> _runnable;
+	std::unique_ptr<hermes::LoggableRunnable> _runnable;
 };
 } // namespace hermes
 #endif // HERMES_H

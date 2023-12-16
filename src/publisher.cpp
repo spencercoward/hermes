@@ -1,10 +1,17 @@
 
 #include <zmq.hpp>
 
+#include <Poco/Thread.h>
+
 #include "hermes/publisher.h"
 
 namespace hermes
 {
+
+Publisher::Publisher(Poco::Logger &log)
+	: hermes::LoggableRunnable(log)
+{
+}
 void Publisher::run()
 {
 	zmq::context_t context = zmq::context_t(1);
@@ -29,14 +36,14 @@ void Publisher::run()
 		auto response = builder.Finish();
 		fbb.Finish(response);
 
-		logger().information("Sending Star " << update_nbr << "…");
+		logger().information("Sending Star " + update_nbr + "…");
 		int buffersize = fbb.GetSize();
 		zmq::message_t request(buffersize);
 		memcpy((void *)request.data(), fbb.GetBufferPointer(),
 		       buffersize);
 		publishSocket.send(request);
-		std::cout << "Star sent!" << std::endl;
+		logger().information("Star sent!");
 
-		sleep(1);
+		Poco::Thread::sleep(1000); // in ms
 	}
 } // namespace hermes
