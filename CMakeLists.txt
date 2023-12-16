@@ -25,6 +25,8 @@ cmake_print_variables(PROJECT_NAME)
 target_sources(${PROJECT_NAME}
 PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hermes.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/publisher.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/subscriber.cpp
 )
 
 target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Util Poco::Net cppzmq libzmq-static flatbuffers::flatbuffers)

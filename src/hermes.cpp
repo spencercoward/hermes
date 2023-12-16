@@ -9,6 +9,8 @@
 #include <Poco/ConsoleChannel.h>
 
 #include "hermes/hermes.h"
+#include "hermes/publisher.h"
+#include "hermes/subscriber.h"
 #include "hermes/Pulse_generated.h"
 
 namespace hermes
@@ -100,6 +102,17 @@ int Hermes::main(const ArgVec &args)
 {
 	if (!_helpRequested)
 	{
+		if (_roleString == "pub")
+		{
+			_runnable.reset(new hermes::Publisher);
+		}
+		else if (_roleString == "sub")
+		{
+			_runnable.reset(new hermes::Subscriber);
+		}
+		else
+		{
+		}
 		logger().information("Command line:");
 		std::ostringstream ostr;
 		for (ArgVec::const_iterator it = argv().begin();
