@@ -1,6 +1,5 @@
 // written by scoward
-
-#include <zmq.hpp>
+#include <iostream>
 
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionSet.h>
@@ -11,7 +10,6 @@
 #include "hermes/hermes.h"
 #include "hermes/publisher.h"
 #include "hermes/subscriber.h"
-#include "hermes/Pulse_generated.h"
 
 namespace hermes
 {
@@ -29,14 +27,6 @@ void Hermes::initialize(Application &self)
 	// add your own initialization code here
 	Poco::AutoPtr<Poco::ColorConsoleChannel> pCCC =
 		new Poco::ColorConsoleChannel;
-	// pCCC->setProperty("traceColor", "");
-	// pCCC->setProperty("debugColor", "");
-	// pCCC->setProperty("informationColor", "");
-	// pCCC->setProperty("noticeColor", "");
-	// pCCC->setProperty("warningColor", "");
-	// pCCC->setProperty("errorColor", "");
-	// pCCC->setProperty("criticalColor", "");
-	// pCCC->setProperty("fatalColor", "");
 	logger().setChannel("", pCCC);
 }
 
@@ -120,20 +110,8 @@ int Hermes::main(const ArgVec &args)
 				_roleString + "]");
 			return Poco::Util::Application::EXIT_USAGE;
 		}
-		logger().information("Command line:");
-		std::ostringstream ostr;
-		for (ArgVec::const_iterator it = argv().begin();
-		     it != argv().end(); ++it)
-		{
-			ostr << *it << ' ';
-		}
-		logger().information(ostr.str());
-		logger().information("Arguments to main():");
-		for (ArgVec::const_iterator it = args.begin(); it != args.end();
-		     ++it)
-		{
-			logger().information(*it);
-		}
+
+		_runnable->run();
 	}
 	return Application::EXIT_OK;
 }

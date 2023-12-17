@@ -1,6 +1,12 @@
+// written by scoward
+#include <sstream>
+
 #include <zmq.hpp>
+#include <flatbuffers/flatbuffers.h>
 
 #include "hermes/subscriber.h"
+
+#include "hermes/Pulse_generated.h"
 
 namespace hermes
 {
@@ -26,15 +32,32 @@ void Subscriber::run()
 		subSocket.recv(&receiveMessage);
 
 		flatbuffers::FlatBufferBuilder fbb;
-		StarBufferBuilder builder(fbb);
+		hermes::PulseBuilder builder(fbb);
 
-		auto star = GetStarBuffer(receiveMessage.data());
+		auto pulse = hermes::GetPulse(receiveMessage.data());
 
-		logger().information("Received Star");
-		logger().information("radius: " << star->radius());
-		logger().information("mass: " << star->mass());
-		logger().information("volume: " << star->volume());
+		std::stringstream ss;
+		ss << "Received Pulse\n";
+		logger().information(ss.str());
+		ss.clear();
+		ss << "toa: " << pulse->toa() << "\n";
+		logger().information(ss.str());
+		ss.clear();
+		ss << "frequency: " << pulse->frequency() << "\n";
+		logger().information(ss.str());
+		ss.clear();
+		ss << "amplitude: " << pulse->amplitude() << "\n";
+		logger().information(ss.str());
+		ss.clear();
+		ss << "pulse_width: " << pulse->pulse_width() << "\n";
+		logger().information(ss.str());
 	}
 }
 
+void Subscriber::setIp(const std::string &ip)
+{
+	_ip = ip;
+}
+
 } // namespace hermes
+// written by scoward

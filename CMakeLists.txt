@@ -13,10 +13,14 @@ if(NOT TARGET libzmq-static)
 endif()
 
 # find flatbuffers
-find_package(flatbuffers REQUIRED)
+if(NOT TARGET flatbuffers)
+  find_package(flatbuffers REQUIRED)
+endif()
 
 #find cppzmq
-find_package(cppzmq)
+if(NOT TARGET cppzmq)
+  find_package(cppzmq)
+endif()
 
 add_executable(${PROJECT_NAME})
 

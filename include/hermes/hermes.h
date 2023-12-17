@@ -1,8 +1,9 @@
+// written by scoward
 #ifndef HERMES_H
 #define HERMES_H
-#include <iostream>
-#include <sstream>
+#include <string>
 #include <memory>
+
 #include <Poco/Util/Application.h>
 
 #include "hermes/LoggableRunnable.h"
@@ -39,3 +40,4 @@ private:
 };
 } // namespace hermes
 #endif // HERMES_H
+// written by scoward
