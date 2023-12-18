@@ -33,7 +33,16 @@ PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/subscriber.cpp
 )
 
-target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Util Poco::Net cppzmq libzmq-static flatbuffers::flatbuffers)
+set(FB_SCHEMAS
+"${CMAKE_CURRENT_SOURCE_DIR}/fbs/Pulse.fbs")
+
+# creates a lib to link against to get the generated output from flatbuffers
+flatbuffers_generate_headers(TARGET "generated_flatbuffers"}
+                             INCLUDE_PREFIX hermes
+                             SCHEMAS ${FB_SCHEMAS})
+
+
+target_link_libraries(hermes PUBLIC Poco::Foundation Poco::Util Poco::Net cppzmq libzmq-static flatbuffers::flatbuffers generated_flatbuffers)
 
 target_include_directories(${PROJECT_NAME}
                            PUBLIC

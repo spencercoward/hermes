@@ -184,8 +184,6 @@ if [ ! -d "$PRJ_BLD_DIR/CMakeFiles" ]; then
         )
 fi
 
-$PWD/external/install/bin/flatc --cpp -o include/hermes fbs/Pulse.fbs
-
 TIMEFORMAT='
 *********************************************************
 build elapsed time is %2lE
