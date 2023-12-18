@@ -1,11 +1,13 @@
 // written by scoward
 #include <sstream>
+#include <iostream>
 
 #include <zmq.hpp>
 #include <flatbuffers/flatbuffers.h>
 
-#include "hermes/subscriber.h"
+#include <Poco/NumberFormatter.h>
 
+#include "hermes/subscriber.h"
 #include "hermes/Pulse_generated.h"
 
 namespace hermes
@@ -17,10 +19,10 @@ Subscriber::Subscriber(Poco::Logger &log)
 
 void Subscriber::run()
 {
-	zmq::context_t context = zmq::context_t(1);
+	zmq::context_t context(1);
 
 	//  Connect our subscriber socket
-	zmq::socket_t subSocket = zmq::socket_t(context, ZMQ_SUB);
+	zmq::socket_t subSocket(context, ZMQ_SUB);
 	subSocket.setsockopt(ZMQ_IDENTITY, "Hello", 5);
 	subSocket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 	subSocket.connect("tcp://localhost:5565");
@@ -34,23 +36,20 @@ void Subscriber::run()
 		flatbuffers::FlatBufferBuilder fbb;
 		hermes::PulseBuilder builder(fbb);
 
-		auto pulse = hermes::GetPulse(receiveMessage.data());
+		auto pulses = hermes::GetPulseMesasge(receiveMessage.data());
 
-		std::stringstream ss;
-		ss << "Received Pulse\n";
-		logger().information(ss.str());
-		ss.clear();
-		ss << "toa: " << pulse->toa() << "\n";
-		logger().information(ss.str());
-		ss.clear();
-		ss << "frequency: " << pulse->frequency() << "\n";
-		logger().information(ss.str());
-		ss.clear();
-		ss << "amplitude: " << pulse->amplitude() << "\n";
-		logger().information(ss.str());
-		ss.clear();
-		ss << "pulse_width: " << pulse->pulse_width() << "\n";
-		logger().information(ss.str());
+		logger().information("\n\nReceived " + Poco::NumberFormatter::format(pulses->pulses()->size()) +
+				     " Pulses");
+
+		for (std::size_t i(0); i < pulses->pulses()->size(); ++i)
+		{
+			auto pulse = (*pulses->pulses())[i];
+			logger().information("\n\tReceived Pulse number " + Poco::NumberFormatter::format(i));
+			logger().information("\ttoa: " + Poco::NumberFormatter::format(pulse->toa()));
+			logger().information("\tfrequency: " + Poco::NumberFormatter::format(pulse->frequency()));
+			logger().information("\tamplitude: " + Poco::NumberFormatter::format(pulse->amplitude()));
+			logger().information("\tpulse_width: " + Poco::NumberFormatter::format(pulse->pulse_width()));
+		}
 	}
 }
 

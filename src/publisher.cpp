@@ -5,17 +5,18 @@
 
 #include <Poco/Thread.h>
 #include <Poco/Random.h>
+#include <Poco/DateTime.h>
+#include <Poco/NumberFormatter.h>
 
 #include "hermes/publisher.h"
 #include "hermes/Pulse_generated.h"
 
 namespace hermes
 {
-
+/// @brief Internal format of what a pulse is to us
 struct InternalPulse
 {
-	InternalPulse(std::uint64_t t, std::uint64_t f, std::uint64_t a,
-		      std::uint64_t pw)
+	InternalPulse(std::uint64_t t, std::uint64_t f, std::uint64_t a, std::uint64_t pw)
 		: toa(t)
 		, frequency(f)
 		, amplitude(a)
@@ -28,55 +29,82 @@ struct InternalPulse
 	std::uint64_t pulse_width;
 };
 
-hermes::InternalPulse getRandomPulse()
+/// @brief Creates a vector of pulses based on our internal format
+/// @return std::vector<hermes::InternalPulse>
+std::vector<hermes::InternalPulse> getRandomPulses()
 {
-	Poco::Random r;
-	r.seed(0);
+	::flatbuffers::FlatBufferBuilder builder;
 
-	hermes::InternalPulse p(r.next(), r.next(), r.next(), r.next());
-	return p;
+	// used to get random data
+	Poco::Random r;
+	// used to get a seed based on the current time
+	Poco::DateTime now;
+
+	// setup a random that will allow us to populate the pulse with random data
+	r.seed(now.microsecond());
+	std::vector<hermes::InternalPulse> pulsesVector;
+
+	for (std::size_t i(0); i < 1000; ++i)
+	{
+		pulsesVector.push_back(hermes::InternalPulse(r.next(), r.next(), r.next(), r.next()));
+	}
+	return pulsesVector;
 }
 
 Publisher::Publisher(Poco::Logger &log)
 	: hermes::LoggableRunnable(log)
 {
 }
+
 void Publisher::run()
 {
-	zmq::context_t context = zmq::context_t(1);
+	zmq::context_t context(1);
 
 	//  We send updates via this socket
-	zmq::socket_t publishSocket = zmq::socket_t(context, ZMQ_PUB);
+	zmq::socket_t publishSocket(context, ZMQ_PUB);
 	publishSocket.bind("tcp://*:5565");
 
-	//  Now broadcast exactly 10 updates with pause
-	int update_nbr;
-	for (update_nbr = 0; update_nbr < 100; update_nbr++)
+	flatbuffers::FlatBufferBuilder fbb;
+	//  Now broadcast exactly 100 updates with pause
+	for (int update_nbr = 0; update_nbr < 100; update_nbr++)
 	{
-		hermes::InternalPulse randomPulse = getRandomPulse();
+		auto pulsesVec = getRandomPulses();
 
-		flatbuffers::FlatBufferBuilder fbb;
-		hermes::PulseBuilder builder(fbb);
+		// vector of Pulses to be sent on the wire
+		std::vector<flatbuffers::Offset<hermes::Pulse> > pulseOffsets;
 
-		builder.add_toa(randomPulse.toa);
-		builder.add_frequency(randomPulse.frequency);
-		builder.add_amplitude(randomPulse.amplitude);
-		builder.add_pulse_width(randomPulse.pulse_width);
+		// Create hermes::Pulses for the wire based on our InternalPulses that we have
+		for (auto pulse : pulsesVec)
+		{
+			pulseOffsets.push_back(hermes::CreatePulse(fbb, pulse.toa, pulse.frequency, pulse.amplitude,
+								   pulse.pulse_width));
+		}
 
+		// Create a vector offset from the vector of pulse offsets
+		auto pulsesVectorOffset = fbb.CreateVector(pulseOffsets);
+
+		// this must be below the CreatePulse call and CreateVector or else its nested and thats not allowed
+		hermes::PulseMesasgeBuilder builder(fbb);
+
+		// ddd the pulses to the PulseMesasgeBuilder
+		builder.add_pulses(pulsesVectorOffset);
+
+		// finish the builders
 		auto response = builder.Finish();
 		fbb.Finish(response);
 
-		std::stringstream ss;
-		ss << "Sending Pulse " << update_nbr << "…";
-		logger().information(ss.str());
-		int buffersize = fbb.GetSize();
-		zmq::message_t request(buffersize);
-		memcpy((void *)request.data(), fbb.GetBufferPointer(),
-		       buffersize);
+		logger().information("Sending Pulses iteration " + Poco::NumberFormatter::format(update_nbr) + "…");
+
+		// create and send the zmq message
+		zmq::message_t request(fbb.GetBufferPointer(), fbb.GetSize());
 		publishSocket.send(request);
-		logger().information("Pulse sent!");
+
+		logger().information("Pulses sent!");
 
 		Poco::Thread::sleep(1000); // in ms
+
+		// clear the buffer after each send
+		fbb.Clear();
 	}
 }
 

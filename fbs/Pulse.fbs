@@ -9,4 +9,8 @@ table Pulse {
     pulse_width:long;
 }
 
-root_type Pulse;
+table PulseMesasge {
+    pulses:[Pulse];
+}
+
+root_type PulseMesasge;
