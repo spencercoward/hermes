@@ -80,10 +80,12 @@ void Publisher::run()
 								   pulse.pulse_width));
 		}
 
-		// Create a vector offset from the vector of pulse offsets
+		// create a vector from the vector of pulse offsets
+		// Note: we are saving this here rather than just calling it below is because it must be above when we
+		// instantiate hermes::PulseMessageBuilder
 		auto pulsesVectorOffset = fbb.CreateVector(pulseOffsets);
 
-		// this must be below the CreatePulse call and CreateVector or else its nested and thats not allowed
+		// this must be below the CreatePulse call and CreateVector call or else its nested and thats not allowed
 		hermes::PulseMesasgeBuilder builder(fbb);
 
 		// ddd the pulses to the PulseMesasgeBuilder
