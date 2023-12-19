@@ -137,7 +137,7 @@ else # Default config to debug for windows/vxworks if not specified
   fi
 fi
 
-quick check if setup has been run
+# quick check if setup has been run
 if [ ! -d "./external/sources/poco" ]
 then
   ./setup.sh

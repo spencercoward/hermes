@@ -22,7 +22,7 @@ void Subscriber::run()
 	zmq::context_t context(1);
 
 	//  Connect our subscriber socket
-	zmq::socket_t subSocket(context, ZMQ_SUB);
+	zmq::socket_t subSocket(context, zmq::socket_type::sub);
 	subSocket.setsockopt(ZMQ_IDENTITY, "Hello", 5);
 	subSocket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 	subSocket.connect("tcp://localhost:5565");

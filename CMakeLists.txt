@@ -37,7 +37,7 @@ set(FB_SCHEMAS
 "${CMAKE_CURRENT_SOURCE_DIR}/fbs/Pulse.fbs")
 
 # creates a lib to link against to get the generated output from flatbuffers
-flatbuffers_generate_headers(TARGET "generated_flatbuffers"}
+flatbuffers_generate_headers(TARGET "generated_flatbuffers"
                              INCLUDE_PREFIX hermes
                              SCHEMAS ${FB_SCHEMAS})
 

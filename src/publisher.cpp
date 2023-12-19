@@ -61,8 +61,8 @@ void Publisher::run()
 	zmq::context_t context(1);
 
 	//  We send updates via this socket
-	zmq::socket_t publishSocket(context, ZMQ_PUB);
-	publishSocket.bind("tcp://*:5565");
+	zmq::socket_t streamSocket(context, zmq::socket_type::pub);
+	streamSocket.bind("tcp://*:5565");
 
 	flatbuffers::FlatBufferBuilder fbb;
 	//  Now broadcast exactly 100 updates with pause
@@ -98,8 +98,8 @@ void Publisher::run()
 		logger().information("Sending Pulses iteration " + Poco::NumberFormatter::format(update_nbr) + "…");
 
 		// create and send the zmq message
-		zmq::message_t request(fbb.GetBufferPointer(), fbb.GetSize());
-		publishSocket.send(request);
+		zmq::message_t message(fbb.GetBufferPointer(), fbb.GetSize());
+		streamSocket.send(message, zmq::send_flags::none);
 
 		logger().information("Pulses sent!");
 
