@@ -10,13 +10,14 @@ namespace hermes
 class Subscriber : public hermes::LoggableRunnable
 {
 public:
-	Subscriber(Poco::Logger &log);
+	Subscriber(Poco::Logger &log, const std::string &id);
 	virtual ~Subscriber() = default;
 	virtual void run();
 	virtual void setIp(const std::string &ip);
 
 protected:
 	std::string _ip;
+	std::string _id;
 
 private:
 };

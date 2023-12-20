@@ -11,6 +11,7 @@ table Pulse {
 
 table PulseMesasge {
     pulses:[Pulse];
+    id:long;
 }
 
 root_type PulseMesasge;

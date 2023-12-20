@@ -1,5 +1,5 @@
 // written by scoward
 
-make a vector of pulses and send those
+multi client/sub one recieve odd one recieve even
 
 // written by scoward

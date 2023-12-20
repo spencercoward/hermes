@@ -25,8 +25,7 @@ void Hermes::initialize(Application &self)
 {
 	Application::initialize(self);
 	// add your own initialization code here
-	Poco::AutoPtr<Poco::ColorConsoleChannel> pCCC =
-		new Poco::ColorConsoleChannel;
+	Poco::AutoPtr<Poco::ColorConsoleChannel> pCCC = new Poco::ColorConsoleChannel;
 	logger().setChannel("", pCCC);
 }
 
@@ -46,27 +45,19 @@ void Hermes::defineOptions(Poco::Util::OptionSet &options)
 {
 	Application::defineOptions(options);
 
-	options.addOption(
-		Poco::Util::Option(
-			"help", "h",
-			"display help information on command line arguments")
-			.required(false)
-			.repeatable(false)
-			.callback(Poco::Util::OptionCallback<Hermes>(
-				this, &Hermes::handleHelp)));
+	options.addOption(Poco::Util::Option("help", "h", "display help information on command line arguments")
+				  .required(false)
+				  .repeatable(false)
+				  .callback(Poco::Util::OptionCallback<Hermes>(this, &Hermes::handleHelp)));
+
+	options.addOption(Poco::Util::Option("role", "r", "role to use [pub/sub]")
+				  .required(true)
+				  .repeatable(false)
+				  .argument("value")
+				  .callback(Poco::Util::OptionCallback<Hermes>(this, &Hermes::handleRole)));
 
 	options.addOption(
-		Poco::Util::Option("role", "r", "role to use [pub/sub]")
-			.required(true)
-			.repeatable(false)
-			.argument("value")
-			.callback(Poco::Util::OptionCallback<Hermes>(
-				this, &Hermes::handleRole)));
-
-	options.addOption(
-		Poco::Util::Option("ipaddr", "i", "ip addr to send/receive on")
-			.required(false)
-			.repeatable(false));
+		Poco::Util::Option("ipaddr", "i", "ip addr to send/receive on").required(false).repeatable(false));
 }
 
 void Hermes::handleHelp(const std::string &name, const std::string &value)
@@ -86,8 +77,7 @@ void Hermes::displayHelp()
 	Poco::Util::HelpFormatter helpFormatter(options());
 	helpFormatter.setCommand(commandName());
 	helpFormatter.setUsage("OPTIONS");
-	helpFormatter.setHeader(
-		"Example Pub Sub application using FlatBuffers and ZeroMQ");
+	helpFormatter.setHeader("Example Pub Sub application using FlatBuffers and ZeroMQ");
 	helpFormatter.format(std::cout);
 }
 
@@ -99,15 +89,18 @@ int Hermes::main(const ArgVec &args)
 		{
 			_runnable.reset(new hermes::Publisher(logger()));
 		}
-		else if (_roleString == "sub")
+		else if (_roleString == "sub1")
 		{
-			_runnable.reset(new hermes::Subscriber(logger()));
+			_runnable.reset(new hermes::Subscriber(logger(), _roleString));
+		}
+		else if (_roleString == "sub2")
+		{
+			_runnable.reset(new hermes::Subscriber(logger(), _roleString));
 		}
 		else
 		{
-			logger().fatal(
-				"role parameter provided is not acceptable, must be pub or sub, you provided [" +
-				_roleString + "]");
+			logger().fatal("role parameter provided is not acceptable, must be pub or sub, you provided [" +
+				       _roleString + "]");
 			return Poco::Util::Application::EXIT_USAGE;
 		}
 

@@ -12,8 +12,10 @@
 
 namespace hermes
 {
-Subscriber::Subscriber(Poco::Logger &log)
+Subscriber::Subscriber(Poco::Logger &log, const std::string &id)
 	: hermes::LoggableRunnable(log)
+	, _ip("")
+	, _id(id)
 {
 }
 
@@ -22,9 +24,8 @@ void Subscriber::run()
 	zmq::context_t context(1);
 
 	//  Connect our subscriber socket
-	zmq::socket_t subSocket(context, zmq::socket_type::sub);
-	subSocket.setsockopt(ZMQ_IDENTITY, "Hello", 5);
-	subSocket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+	zmq::socket_t subSocket(context, zmq::socket_type::dealer);
+	subSocket.setsockopt(ZMQ_IDENTITY, _id.c_str(), _id.length());
 	subSocket.connect("tcp://localhost:5565");
 
 	//  Get updates, expect random Ctrl-C death
@@ -40,6 +41,7 @@ void Subscriber::run()
 
 		logger().information("\n\nReceived " + Poco::NumberFormatter::format(pulses->pulses()->size()) +
 				     " Pulses");
+		logger().information("Received Id is " + Poco::NumberFormatter::format(pulses->id()));
 
 		for (std::size_t i(0); i < pulses->pulses()->size(); ++i)
 		{

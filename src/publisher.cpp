@@ -44,7 +44,7 @@ std::vector<hermes::InternalPulse> getRandomPulses()
 	r.seed(now.microsecond());
 	std::vector<hermes::InternalPulse> pulsesVector;
 
-	for (std::size_t i(0); i < 1000; ++i)
+	for (std::size_t i(0); i < 2; ++i)
 	{
 		pulsesVector.push_back(hermes::InternalPulse(r.next(), r.next(), r.next(), r.next()));
 	}
@@ -61,8 +61,8 @@ void Publisher::run()
 	zmq::context_t context(1);
 
 	//  We send updates via this socket
-	zmq::socket_t streamSocket(context, zmq::socket_type::pub);
-	streamSocket.bind("tcp://*:5565");
+	zmq::socket_t pubSocket(context, zmq::socket_type::router);
+	pubSocket.bind("tcp://*:5565");
 
 	flatbuffers::FlatBufferBuilder fbb;
 	//  Now broadcast exactly 100 updates with pause
@@ -90,6 +90,7 @@ void Publisher::run()
 
 		// ddd the pulses to the PulseMesasgeBuilder
 		builder.add_pulses(pulsesVectorOffset);
+		builder.add_id(update_nbr);
 
 		// finish the builders
 		auto response = builder.Finish();
@@ -99,7 +100,17 @@ void Publisher::run()
 
 		// create and send the zmq message
 		zmq::message_t message(fbb.GetBufferPointer(), fbb.GetSize());
-		streamSocket.send(message, zmq::send_flags::none);
+		if (update_nbr % 2)
+		{
+			zmq::message_t identity("sub1", 4);
+			pubSocket.send(identity, zmq::send_flags::sndmore);
+		}
+		else
+		{
+			zmq::message_t identity("sub2", 4);
+			pubSocket.send(identity, zmq::send_flags::sndmore);
+		}
+		pubSocket.send(message, zmq::send_flags::none);
 
 		logger().information("Pulses sent!");
 
