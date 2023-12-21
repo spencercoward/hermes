@@ -8,7 +8,7 @@
 #include <Poco/DateTime.h>
 #include <Poco/NumberFormatter.h>
 
-#include "hermes/publisher.h"
+#include "hermes/server.h"
 #include "hermes/Pulse_generated.h"
 
 namespace hermes
@@ -51,12 +51,12 @@ std::vector<hermes::InternalPulse> getRandomPulses()
 	return pulsesVector;
 }
 
-Publisher::Publisher(Poco::Logger &log)
+Server::Server(Poco::Logger &log)
 	: hermes::LoggableRunnable(log)
 {
 }
 
-void Publisher::run()
+void Server::run()
 {
 	zmq::context_t context(1);
 
@@ -121,7 +121,7 @@ void Publisher::run()
 	}
 }
 
-void Publisher::setIp(const std::string &ip)
+void Server::setIp(const std::string &ip)
 {
 	_ip = ip;
 }

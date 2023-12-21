@@ -7,23 +7,23 @@
 
 #include <Poco/NumberFormatter.h>
 
-#include "hermes/subscriber.h"
+#include "hermes/client.h"
 #include "hermes/Pulse_generated.h"
 
 namespace hermes
 {
-Subscriber::Subscriber(Poco::Logger &log, const std::string &id)
+Client::Client(Poco::Logger &log, const std::string &id)
 	: hermes::LoggableRunnable(log)
 	, _ip("")
 	, _id(id)
 {
 }
 
-void Subscriber::run()
+void Client::run()
 {
 	zmq::context_t context(1);
 
-	//  Connect our subscriber socket
+	//  Connect our client socket
 	zmq::socket_t subSocket(context, zmq::socket_type::dealer);
 	subSocket.setsockopt(ZMQ_IDENTITY, _id.c_str(), _id.length());
 	subSocket.connect("tcp://localhost:5565");
@@ -55,7 +55,7 @@ void Subscriber::run()
 	}
 }
 
-void Subscriber::setIp(const std::string &ip)
+void Client::setIp(const std::string &ip)
 {
 	_ip = ip;
 }

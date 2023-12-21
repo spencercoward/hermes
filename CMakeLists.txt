@@ -29,8 +29,8 @@ cmake_print_variables(PROJECT_NAME)
 target_sources(${PROJECT_NAME}
 PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/hermes.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/publisher.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/subscriber.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/server.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/client.cpp
 )
 
 set(FB_SCHEMAS

@@ -8,8 +8,8 @@
 #include <Poco/ConsoleChannel.h>
 
 #include "hermes/hermes.h"
-#include "hermes/publisher.h"
-#include "hermes/subscriber.h"
+#include "hermes/server.h"
+#include "hermes/client.h"
 
 namespace hermes
 {
@@ -87,15 +87,15 @@ int Hermes::main(const ArgVec &args)
 	{
 		if (_roleString == "pub")
 		{
-			_runnable.reset(new hermes::Publisher(logger()));
+			_runnable.reset(new hermes::Server(logger()));
 		}
 		else if (_roleString == "sub1")
 		{
-			_runnable.reset(new hermes::Subscriber(logger(), _roleString));
+			_runnable.reset(new hermes::Client(logger(), _roleString));
 		}
 		else if (_roleString == "sub2")
 		{
-			_runnable.reset(new hermes::Subscriber(logger(), _roleString));
+			_runnable.reset(new hermes::Client(logger(), _roleString));
 		}
 		else
 		{

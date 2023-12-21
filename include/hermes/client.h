@@ -1,26 +1,27 @@
 // written by scoward
-#ifndef PUBLISHER_H
-#define PUBLISHER_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
 #include "hermes/LoggableRunnable.h"
 
 namespace hermes
 {
 
-class Publisher : public hermes::LoggableRunnable
+class Client : public hermes::LoggableRunnable
 {
 public:
-	Publisher(Poco::Logger &log);
-	virtual ~Publisher() = default;
+	Client(Poco::Logger &log, const std::string &id);
+	virtual ~Client() = default;
 	virtual void run();
 	virtual void setIp(const std::string &ip);
 
 protected:
 	std::string _ip;
+	std::string _id;
 
 private:
 };
 
 } // namespace hermes
-#endif // PUBLISHER_H
+#endif // CLIENT_H
 // written by scoward
